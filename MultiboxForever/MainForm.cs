@@ -100,10 +100,10 @@ internal sealed class MainForm : Form
             Width = 100,
             Location = new Point(240, 30)
         };
-        fieldsPanel.Controls.Add(_hostIpLabel);
-        fieldsPanel.Controls.Add(_hostIpBox);
         fieldsPanel.Controls.Add(portLabel);
         fieldsPanel.Controls.Add(_portBox);
+        fieldsPanel.Controls.Add(_hostIpLabel);
+        fieldsPanel.Controls.Add(_hostIpBox);
 
         var actionPanel = new Panel { Dock = DockStyle.Top, Height = 52, Padding = new Padding(16, 4, 16, 4) };
         _primaryButton = new Button
