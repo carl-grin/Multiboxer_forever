@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <RootNamespace>MultiboxForever</RootNamespace>
+    <AssemblyName>MultiboxForever</AssemblyName>
+    <Description>LAN multibox helper: broadcast Ctrl+Alt+{0-9, Minus, Plus} from a host PC and inject bare keys on listeners.</Description>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+</Project>
