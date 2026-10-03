@@ -34,10 +34,22 @@ Notes:
 - Windows 11 (Win32 hooks + `SendInput`)
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (or newer SDK that can target `net8.0-windows`)
 
+## Clone (this GitHub repo)
+
+```powershell
+git clone https://github.com/carl-grin/Multiboxer_forever.git
+cd Multiboxer_forever
+```
+
+If you are on a feature branch (for example after a PR checkout):
+
+```powershell
+git checkout cursor/multibox-forever-win-client
+```
+
 ## Build & run (Windows 11)
 
 ```powershell
-cd path\to\repo
 dotnet restore MultiboxForever.sln
 dotnet build MultiboxForever.sln -c Release
 dotnet run --project MultiboxForever -c Release
