@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
 namespace MultiboxForever;
@@ -26,12 +27,22 @@ internal sealed class MainForm : Form
     public MainForm()
     {
         Text = "Multibox Forever";
-        MinimumSize = new Size(480, 420);
-        Size = new Size(520, 460);
+        MinimumSize = new Size(480, 448);
+        Size = new Size(520, 488);
         StartPosition = FormStartPosition.CenterScreen;
         FormBorderStyle = FormBorderStyle.FixedSingle;
         MaximizeBox = false;
         Font = new Font("Segoe UI", 9.75f);
+
+        var machineIpLabel = new Label
+        {
+            AutoSize = false,
+            Dock = DockStyle.Top,
+            Height = 28,
+            Text = DescribeLocalAddresses(),
+            Font = new Font("Segoe UI Semibold", 11f),
+            Padding = new Padding(16, 10, 16, 0)
+        };
 
         var title = new Label
         {
@@ -162,6 +173,7 @@ internal sealed class MainForm : Form
         Controls.Add(modePanel);
         Controls.Add(subtitle);
         Controls.Add(title);
+        Controls.Add(machineIpLabel);
 
         _host.StatusChanged += msg => Ui(() => _statusLabel.Text = msg);
         _host.ClientCountChanged += count => Ui(() => _clientCountLabel.Text = $"Listeners connected: {count}");
@@ -393,6 +405,37 @@ internal sealed class MainForm : Form
         catch
         {
         }
+    }
+
+    private static string DescribeLocalAddresses()
+    {
+        try
+        {
+            var ipv4 = NetworkInterface.GetAllNetworkInterfaces()
+                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
+                .Where(nic => nic.NetworkInterfaceType is not NetworkInterfaceType.Loopback and not NetworkInterfaceType.Tunnel)
+                .SelectMany(nic => nic.GetIPProperties().UnicastAddresses)
+                .Select(address => address.Address)
+                .Where(address => address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(address))
+                .Distinct()
+                .ToList();
+
+            var usable = ipv4.Where(address => !IsAutomaticPrivate(address)).ToList();
+            var shown = usable.Count > 0 ? usable : ipv4;
+            return shown.Count == 0
+                ? "This PC: no LAN IPv4 address found"
+                : "This PC: " + string.Join(", ", shown.Select(address => address.ToString()));
+        }
+        catch (Exception)
+        {
+            return "This PC: could not read the IP address";
+        }
+    }
+
+    private static bool IsAutomaticPrivate(IPAddress address)
+    {
+        var bytes = address.GetAddressBytes();
+        return bytes.Length == 4 && bytes[0] == 169 && bytes[1] == 254;
     }
 
     private void Ui(Action action)
