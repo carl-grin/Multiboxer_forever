@@ -31,6 +31,9 @@ internal static class NativeMethods
         public UIntPtr dwExtraInfo;
     }
 
+    // Win32 INPUT's union is sized to the largest member (MOUSEINPUT).
+    // On x64 that makes INPUT 40 bytes; on x86 it is 28. SendInput rejects
+    // any other cbSize with ERROR_INVALID_PARAMETER (87) and injects nothing.
     [StructLayout(LayoutKind.Sequential)]
     public struct INPUT
     {
@@ -41,7 +44,20 @@ internal static class NativeMethods
     [StructLayout(LayoutKind.Explicit)]
     public struct InputUnion
     {
+        [FieldOffset(0)] public MOUSEINPUT mi;
         [FieldOffset(0)] public KEYBDINPUT ki;
+        [FieldOffset(0)] public HARDWAREINPUT hi;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MOUSEINPUT
+    {
+        public int dx;
+        public int dy;
+        public uint mouseData;
+        public uint dwFlags;
+        public uint time;
+        public UIntPtr dwExtraInfo;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -52,6 +68,14 @@ internal static class NativeMethods
         public uint dwFlags;
         public uint time;
         public UIntPtr dwExtraInfo;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct HARDWAREINPUT
+    {
+        public uint uMsg;
+        public ushort wParamL;
+        public ushort wParamH;
     }
 
     [DllImport("user32.dll", SetLastError = true)]
