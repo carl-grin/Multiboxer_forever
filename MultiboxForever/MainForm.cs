@@ -41,7 +41,7 @@ internal sealed class MainForm : Form
             Height = 28,
             Text = DescribeLocalAddresses(),
             Font = new Font("Segoe UI Semibold", 11f),
-            Padding = new Padding(16, 10, 16, 0)
+            Padding = new Padding(16, 0, 16, 4)
         };
 
         var title = new Label
@@ -171,9 +171,9 @@ internal sealed class MainForm : Form
         Controls.Add(actionPanel);
         Controls.Add(fieldsPanel);
         Controls.Add(modePanel);
+        Controls.Add(machineIpLabel);
         Controls.Add(subtitle);
         Controls.Add(title);
-        Controls.Add(machineIpLabel);
 
         _host.StatusChanged += msg => Ui(() => _statusLabel.Text = msg);
         _host.ClientCountChanged += count => Ui(() => _clientCountLabel.Text = $"Listeners connected: {count}");
